@@ -10,6 +10,7 @@ It contains a continuous variant of tic-tac-toe where a tie between players or a
 <br>
 When a space has been used in a valid combination of three it may still be used in another combination of three if it does not create a combination of four or more. 
 
+Proof of concept [GitHub](https://github.com/belzile/tic-tac-toe)
 
 ## Example
 ![This is a mockup of Cascading Tic-Tac-Toe.](image.png)
