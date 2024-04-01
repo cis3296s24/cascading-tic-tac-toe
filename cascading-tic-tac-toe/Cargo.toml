@@ -6,7 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = "0.13.1"
+bevy = "0.8.1"   # Make sure this is the version of Bevy you need
+bevy_kira_audio = "0.8" # Make sure this version is compatible with your version of Bevy
 
 [dev-dependencies]
 test-case = "3.3.1"
