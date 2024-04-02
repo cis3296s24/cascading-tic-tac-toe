@@ -1,4 +1,8 @@
 use bevy::prelude::*;
+use bevy_kira_audio::AudioPlugin;
+
+
+
 
 pub use states::*;
 pub use components::*;
@@ -9,6 +13,8 @@ pub use in_game_menu::*;
 pub use board::*;
 pub use start_menu::*;
 pub use game_screen::*;
+pub use audio::*;
+
 
 mod states;
 mod components;
@@ -19,6 +25,8 @@ mod in_game_menu;
 mod board;
 mod start_menu;
 mod game_screen;
+mod audio;
+
 
 fn main() {
     let mut app = App::new();
@@ -41,5 +49,7 @@ fn main() {
     .add_plugins(WinningLogicPlugin)
     .add_plugins(MenuPlugin)
     .add_plugins(GameScreen)
+    .add_plugins(DefaultPlugins)
     .run();
 }
+
