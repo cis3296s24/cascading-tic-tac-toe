@@ -3,6 +3,13 @@
 use bevy::prelude::*;
 
 #[derive(Resource)]
+pub struct RoundSettings {
+    pub round_count: u32,
+    pub target: u32,
+    // pub time: u32,
+}
+
+#[derive(Resource)]
 pub struct RoundCount(u32);
 
 impl RoundCount {
