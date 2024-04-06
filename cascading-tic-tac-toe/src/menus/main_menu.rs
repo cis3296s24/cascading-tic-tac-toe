@@ -39,6 +39,7 @@ impl Plugin for MenuPlugin{
 }
 
 fn main_menu_setup(
+    mut cam: ResMut<MainCamera>,
     mut commands: Commands,
     asset_server: Res<AssetServer>
 ) {
@@ -102,7 +103,15 @@ fn main_menu_setup(
                 })
                 .with_children(|parent| {
                     // Display the game name
-                    parent.spawn(text_bundle("Cascading Tic-Tac-Toe", &asset_server, (80.0, TEXT_COLOR))
+                    parent.spawn(
+                        TextBundle::from_section(
+                            "Cascading Tic-Tac-Toe",
+                            TextStyle {
+                                font_size: 80.0,
+                                color: TEXT_COLOR,
+                                ..default()
+                            },
+                        )
                         .with_style(Style {
                             margin: UiRect::all(Val::Px(50.0)),
                             ..default()
@@ -110,19 +119,24 @@ fn main_menu_setup(
                     );
 
                     // Display three buttons for each action available from the main menu:
-                    for params in buttons {
-                        parent
-                            .spawn((
-                                button_bundle(
-                                    (Val::Px(250.0), Val::Px(65.0), Option::from(UiRect::all(Val::Px(20.0))), JustifyContent::Center, AlignItems::Center),
-                                    NORMAL_BUTTON.into()
-                                ),
-                                params.action,
-                            ))
-                            .with_children(|parent| {
-                                let icon = asset_server.load(params.icon_path);
-                                parent.spawn(image_bundle(UiImage::new(icon)));
-                                parent.spawn(text_bundle(params.text, &asset_server, (40.0, params.text_color)));
+                    // - new game
+                    // - settings
+                    // - quit
+                    parent
+                        .spawn((
+                            ButtonBundle {
+                                style: button_style.clone(),
+                                background_color: NORMAL_BUTTON.into(),
+                                ..default()
+                            },
+                            MenuButtonAction::Play,
+                        ))
+                        .with_children(|parent| {
+                            let icon = asset_server.load("texture/icons/right-arrow.png");
+                            parent.spawn(ImageBundle {
+                                style: button_icon_style.clone(),
+                                image: UiImage::new(icon),
+                                ..default()
                             });
                             parent.spawn(TextBundle::from_section(
                                 "New Game",
@@ -313,3 +327,9 @@ fn menu_action(
     }
 }
 
+// Generic system that takes a component as a parameter, and will despawn all entities with that component
+pub fn despawn_screen<T: Component>(to_despawn: Query<Entity, With<T>>, mut commands: Commands) {
+    for entity in &to_despawn {
+        commands.entity(entity).despawn_recursive();
+    }
+}

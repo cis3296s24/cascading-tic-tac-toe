@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{GameScreenTag, GameState, Player, PlayerTurn};
-use crate::theme::theme::UiTheme;
+use crate::{GameScreenTag, GameState, Player, PlayerTurn, UiTheme};
 
 #[derive(Component)]
 pub struct InstructionText;
