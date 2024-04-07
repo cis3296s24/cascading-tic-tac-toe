@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_kira_audio::prelude::*;
 
 use crate::{
-    CellState, GameScreenTag, GameState, GridCell, Player, PlayerTurn, RoundCount, StateWrapper,
+    CellState, GameScreenTag, GameState, GridCell, PlayerTag, PlayerTurn, RoundInit, StateWrapper,
 };
 
 /// Event triggered when a cell is clicked
@@ -92,11 +92,13 @@ pub fn on_cell_clicked(
     }
 }
 
-/// Updates the state of the clicked cell based on the current player turn
+// fn update_player_score(target_score: Res<RoundInit>, )
+
+// Updates the state of the clicked cell based on the current player turn
 fn update_cell_state(cell: &mut Mut<GridCell>, player_turn: &PlayerTurn) {
     cell.state = match player_turn {
-        PlayerTurn::X => CellState::Filled(Player::X),
-        PlayerTurn::O => CellState::Filled(Player::O),
+        PlayerTurn::X => CellState::Filled(PlayerTag::X),
+        PlayerTurn::O => CellState::Filled(PlayerTag::O),
     };
 }
 
@@ -286,9 +288,9 @@ pub fn setup_board(
     mut commands: Commands,
     theme: Res<UiTheme>,
     asset_server: Res<AssetServer>,
-    round_count: Res<RoundCount>,
+    round_init: Res<RoundInit>,
 ) {
-    let n = round_count.get_current();
+    let n = round_init.round_count;
     let mut invalid_cells = Vec::new();
     generate_invalid_cells(n, &mut invalid_cells);
 

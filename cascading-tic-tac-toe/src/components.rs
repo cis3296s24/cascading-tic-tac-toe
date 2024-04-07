@@ -26,7 +26,6 @@ pub struct StateWrapper<'w, T: States> {
     pub next: ResMut<'w, NextState<T>>,  // Next state
 }
 
-
 // Tag component used to tag entities added on the display settings menu screen
 #[derive(Component)]
 struct OnDisplaySettingsMenuScreen;
@@ -34,6 +33,11 @@ struct OnDisplaySettingsMenuScreen;
 // Tag component used to tag entities added on the sound settings menu screen
 #[derive(Component)]
 struct OnSoundSettingsMenuScreen;
+
+#[derive(Component)]
+pub struct Player {
+    pub score: u32,
+}
 
 // Tag component used to mark which setting is currently selected
 #[derive(Component)]
