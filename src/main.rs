@@ -6,8 +6,9 @@ pub use game_instructions::*;
 pub use winning_logic::*;
 pub use in_game_menu::*;
 pub use board::*;
-pub use start_menu::*;
+pub use main_menu::*;
 pub use game_screen::*;
+use crate::theme::theme::UiTheme;
 
 mod states;
 mod components;
@@ -15,8 +16,20 @@ mod game_instructions;
 mod winning_logic;
 mod in_game_menu;
 mod board;
-mod start_menu;
+mod main_menu;
 mod game_screen;
+
+mod theme {
+    pub mod theme;
+}
+
+mod ui_components {
+    pub mod bundles;
+}
+
+mod utils {
+    pub mod despawn_screen;
+}
 
 fn main() {
     let mut app = App::new();
@@ -38,5 +51,13 @@ fn main() {
     .add_plugins(WinningLogicPlugin)
     .add_plugins(MenuPlugin)
     .add_plugins(GameScreen)
+    .add_systems(
+        Startup,
+        place_camera,
+    )
     .run();
+}
+
+fn place_camera(mut commands: Commands) {
+    commands.spawn(Camera2dBundle::default());
 }

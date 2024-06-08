@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
-use crate::{GameScreenTag, GameState, Player, PlayerTurn, UiTheme};
+use crate::{GameScreenTag, GameState, Player, PlayerTurn};
+use crate::theme::theme::UiTheme;
 
 #[derive(Component)]
 pub struct InstructionText;
@@ -46,8 +47,8 @@ fn text(asset_server: &Res<AssetServer>, theme: &Res<UiTheme>, label: &str) -> T
 pub fn setup_instructions(mut commands: Commands, theme: Res<UiTheme>, asset_server: Res<AssetServer>) {
     commands.spawn(root()).with_children(|parent| {
         parent
-            .spawn((text(&asset_server, &theme, "Test"), GameScreenTag)) // Spawn text node for instruction
-            .insert(InstructionText); // Add InstructionText component to the text node entity
+            .spawn((text(&asset_server, &theme, "Test"), GameScreenTag))
+            .insert(InstructionText);
     });
 }
 
@@ -57,7 +58,6 @@ pub fn update_instruction_on_state_change(
     game_state: Res<State<GameState>>,
     mut instructions: Query<&mut Text, With<InstructionText>>,
 ) {
-    // If player turn changes, update instruction text accordingly
     if player_turn_state.is_changed() {
         let next_text = match player_turn_state.clone() {
             PlayerTurn::X => "Player's turn: X",
@@ -67,7 +67,6 @@ pub fn update_instruction_on_state_change(
         ui_text.sections[0].value = next_text.to_string();
     }
 
-    // If game state changes, update instruction text accordingly
     if game_state.is_changed() {
         let mut ui_text = instructions.single_mut();
 

@@ -1,6 +1,6 @@
 Tic Tac Toe Game coded in Rust with Bevy.
 
-![Tic-Tac-Toe](image.png)
+![Tic-Tac-Toe](assets/image.png)
 ## Running Locally
 
 ### Native

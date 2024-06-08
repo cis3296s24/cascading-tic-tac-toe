@@ -1,37 +1,13 @@
 use bevy::prelude::*;
 
 use crate::{CellState, GameScreenTag, GameState, Player, PlayerTurn, StateWrapper, TicTacToeCell};
+use crate::theme::theme::UiTheme;
+use crate::ui_components::bundles::{button_bundle, text_bundle};
 
 /// Event triggered when a cell is clicked
 #[derive(Event)]
 pub struct CellClickedEvent {
     entity: Entity,
-}
-
-/// Resource containing UI theme settings
-#[derive(Resource)]
-pub struct UiTheme {
-    pub root: BackgroundColor,
-    pub border: BackgroundColor,
-    pub menu: BackgroundColor,
-    pub button: BackgroundColor,
-    pub button_hovered: BackgroundColor,
-    pub button_pressed: BackgroundColor,
-    pub button_text: Color,
-}
-
-impl FromWorld for UiTheme {
-    fn from_world(_: &mut World) -> Self {
-        UiTheme {
-            root: Color::NONE.into(),
-            border: Color::rgb(0.65, 0.65, 0.65).into(),
-            menu: Color::rgb(0.15, 0.15, 0.15).into(),
-            button: Color::rgb(0.15, 0.15, 0.15).into(),
-            button_hovered: Color::rgb(0.75, 0.35, 0.0).into(),
-            button_pressed: Color::rgb(0.35, 0.75, 0.35).into(),
-            button_text: Color::WHITE,
-        }
-    }
 }
 
 /// System for handling board cell interaction
@@ -136,32 +112,23 @@ pub fn root(theme: &Res<UiTheme>) -> NodeBundle {
 }
 
 pub fn main_border(theme: &Res<UiTheme>) -> NodeBundle {
-    // Define the style for the main border node
     NodeBundle {
         style: Style {
-            // Set the width to auto
             width: Val::Auto,
-            // Set the height to auto
             height: Val::Auto,
-            // Add a border with 2 pixels width
             border: UiRect::all(Val::Px(2.0)),
-            // Set the flex direction to column-reverse
             flex_direction: FlexDirection::ColumnReverse,
             ..Default::default()
         },
-        // Set the background color of the main border node to the border color defined in the theme
         background_color: theme.border,
         ..Default::default()
     }
 }
 
 pub fn square_row() -> NodeBundle {
-    // Define the style for a square row node
     NodeBundle {
         style: Style {
-            // Set the width to auto
             width: Val::Auto,
-            // Set the height to auto
             height: Val::Auto,
             ..Default::default()
         },
@@ -170,120 +137,48 @@ pub fn square_row() -> NodeBundle {
 }
 
 pub fn square_border(theme: &Res<UiTheme>) -> NodeBundle {
-    // Define the style for a square border node
     NodeBundle {
         style: Style {
-            // Set the width to 50 pixels
             width: Val::Px(50.0),
-            // Set the height to 50 pixels
             height: Val::Px(50.0),
-            // Add a border with 2 pixels width
             border: UiRect::all(Val::Px(2.0)),
             ..Default::default()
         },
-        // Set the background color of the square border node to the border color defined in the theme
         background_color: theme.border,
         ..Default::default()
     }
 }
 
-pub fn menu_background(theme: &Res<UiTheme>) -> NodeBundle {
-    // Define the style for the menu background node
-    NodeBundle {
-        style: Style {
-            // Set the width to 100% of the parent's width
-            width: Val::Percent(100.0),
-            // Set the height to 100% of the parent's height
-            height: Val::Percent(100.0),
-            // Align items to the center
-            align_items: AlignItems::Center,
-            // Justify content to the center
-            justify_content: JustifyContent::Center,
-            // Set the flex direction to column-reverse
-            flex_direction: FlexDirection::ColumnReverse,
-            // Add padding of 5 pixels to all sides
-            padding: UiRect::all(Val::Px(5.0)),
-            ..Default::default()
-        },
-        // Set the background color of the menu background node to the menu color defined in the theme
-        background_color: theme.menu,
-        ..Default::default()
-    }
-}
-
-pub fn button(theme: &Res<UiTheme>) -> ButtonBundle {
-    // Define the button bundle with styles and properties
-    ButtonBundle {
-        style: Style {
-            // Set the width to 100% of the parent's width
-            width: Val::Percent(100.0),
-            // Set the height to 100% of the parent's height
-            height: Val::Percent(100.0),
-            // Justify content to the center
-            justify_content: JustifyContent::Center,
-            // Align items to the center
-            align_items: AlignItems::Center,
-            ..Default::default()
-        },
-        // Set the background color of the button to the button color defined in the theme
-        background_color: theme.button,
-        ..Default::default()
-    }
-}
-
-pub fn button_text(
-    asset_server: &Res<AssetServer>,
-    theme: &Res<UiTheme>,
-    label: &str,
-) -> TextBundle {
-    // Define the text bundle with styles and properties
-    TextBundle {
-        text: Text::from_section(
-            label,
-            TextStyle {
-                // Load the FiraSans-Bold font from the asset server
-                font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                // Set the font size to 30 pixels
-                font_size: 30.0,
-                // Set the color of the text to the button text color defined in the theme
-                color: theme.button_text,
-            },
-        ),
-        ..Default::default()
-    }
-}
-
 pub fn setup_board(mut commands: Commands, theme: Res<UiTheme>, asset_server: Res<AssetServer>) {
-    // Spawn the root node with children
     commands.spawn((root(&theme), GameScreenTag)).with_children(|parent| {
-        // Spawn the main border node with children
         parent
             .spawn(main_border(&theme))
             .with_children(|parent| {
-                // Loop through rows
                 for row_index in 0..3 {
-                    // Spawn the square row node with children
                     parent.spawn(square_row()).with_children(|parent| {
-                        // Loop through columns
                         for column_index in 1..=3 {
-                            // Calculate the cell ID
                             let cell_id = 3 * row_index + column_index - 1;
-                            // Spawn the square border node with children
                             parent
                                 .spawn(square_border(&theme))
                                 .with_children(|parent| {
-                                    // Spawn the button node with children
                                     parent
-                                        .spawn(button(&theme))
+                                        .spawn(button_bundle(
+                                            (
+                                                Val::Percent(100.0),
+                                                Val::Percent(100.0),
+                                                None,
+                                                JustifyContent::Center,
+                                                AlignItems::Center,
+                                            ),
+                                            theme.button,
+                                        ))
                                         .with_children(|parent| {
-                                            // Spawn the button text node
-                                            parent.spawn(button_text(
-                                                &asset_server,
-                                                &theme,
+                                            parent.spawn(text_bundle(
                                                 "",
+                                                &asset_server,
+                                                (30.0, theme.button_text),
                                             ));
                                         })
-                                        // Insert the TicTacToeCell component
                                         .insert(TicTacToeCell {
                                             cell_id,
                                             state: CellState::Empty,

@@ -21,7 +21,6 @@ pub struct WinningLogicPlugin;
 
 impl Plugin for WinningLogicPlugin {
     fn build(&self, app: &mut App) {
-        // Add the system for checking winning conditions
         app.add_systems(Update, is_game_over.run_if(in_state(GameState::GameOngoing)));
     }
 }
@@ -31,22 +30,16 @@ pub fn is_game_over(
     cells_query: Query<&TicTacToeCell>,
     mut update_winner: ResMut<NextState<GameState>>,
 ) {
-    // Collect the states of all cells into a vector
     let mut cells = vec![CellState::Empty; 9];
     for cell in cells_query.iter() {
         cells[cell.cell_id as usize] = cell.state.clone();
     }
 
-    // Check if player X has won
     if is_winner(&cells, Player::X) {
         update_winner.set(GameState::Won(Player::X))
-    }
-    // Check if player O has won
-    if is_winner(&cells, Player::O) {
+    } else if is_winner(&cells, Player::O) {
         update_winner.set(GameState::Won(Player::O))
-    }
-    // Check if the game is a draw
-    if is_draw(&cells) {
+    } else if is_draw(&cells) {
         update_winner.set(GameState::Draw)
     }
 }
@@ -54,9 +47,8 @@ pub fn is_game_over(
 /// Check if a player has won
 fn is_winner(cells: &Vec<CellState>, player: Player) -> bool {
     let state = CellState::Filled(player);
-    // Iterate over all winning combinations
+
     for winning_combination in WINNING_COMBINATIONS {
-        // Check if the player has filled all cells in the combination
         if cells[winning_combination[0]] == state
             && cells[winning_combination[1]] == state
             && cells[winning_combination[2]] == state
@@ -68,9 +60,7 @@ fn is_winner(cells: &Vec<CellState>, player: Player) -> bool {
     return false;
 }
 
-/// Check if the game is a draw
 fn is_draw(cells: &Vec<CellState>) -> bool {
-    // If there are no empty cells left, the game is a draw
     !cells.iter().any(|element| *element == CellState::Empty)
 }
 
